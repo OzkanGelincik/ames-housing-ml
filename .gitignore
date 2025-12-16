@@ -1,0 +1,22 @@
+# --- System Files ---
+.DS_Store
+
+# --- Python & Environment ---
+__pycache__/
+catboost_info/
+
+# --- Data & Media ---
+data/
+pic/
+
+# --- Scripts to Ignore ---
+app_2.0.py
+test_api.py
+app.py
+
+# --- Notebooks to Ignore ---
+ames_housing_prices_template.ipynb
+ames_housing_prices_modeling_master_depricated.ipynb
+ames_housing_prices_modeling_production_depricated.ipynb
+ames_housing_prices_EDA.ipynb
+ames_housing_prices_modeling.ipynb
