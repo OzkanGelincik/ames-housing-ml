@@ -13,14 +13,15 @@ This project is divided into two distinct phases:
 ### 1. 🔬 The Lab Notebook (`ames_housing_prices_modeling_master.ipynb`)
 **"The Research Phase"**
 - Extensive Exploratory Data Analysis (EDA).
-- Feature Engineering experiments (Ordinal vs. One-Hot Encoding).
+- Model training: OLS, Ridge, Lasso, ElasticNet, SVR, Random Forest, XGBoost, CatBoost, and Voting (Ensemble) Regressors
+- Feature Engineering experiments (Ordinal vs. One-Hot Encoding; incl. Total Square Footage, House Age, Total Bathrooms, and Longitude/Lattitude Mapping for Neighborhoods).
 - Hyperparameter tuning via GridSearch.
-- Stress Testing (e.g., The "Ghost House" and "Mega Mansion" simulations).
-- Feature Importance Analysis.
+- Stress Testing (e.g., The 'Ghost House' (0 SqFt), 'Impossible House' (Negative Area) and 'Mega-Mansion' (200k SqFt) simulations).
+- Feature Importance Analysis (Model Coefficients, Feature Importances, Perfmuation Importance, and SHAP values).
 
 ### 2. 🏭 The Production Notebook (`ames_housing_prices_modeling_production.ipynb`)
 **"The Deployment Phase"**
-- A streamlined, clean execution pipeline.
+- A streamlined, clean execution pipeline (incl. the winning model 🏆).
 - Consolidates preprocessing and modeling into a single `sklearn` Pipeline.
 - Handles raw user input (JSON-style) with automatic imputation.
 - Generates the final deployment artifacts (`.pkl` files).
