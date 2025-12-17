@@ -2,43 +2,56 @@ import joblib
 import pandas as pd
 import numpy as np
 from flask import Flask, request, jsonify
+from pathlib import Path 
 
 # ==================================================
-# 1. INITIALIZE APP
+# 1. INITIALIZE APP & PATHS
 # ==================================================
 app = Flask(__name__)
+
+# Define where the models live relative to this script
+# If app_3.0.py is in the project root, this points to root/models/
+BASE_DIR = Path(__file__).parent
+MODELS_DIR = BASE_DIR / "models"
 
 # ==================================================
 # 2. CRITICAL: DEFINE CUSTOM FUNCTIONS
 # ==================================================
 # This function MUST exist here so the pickle knows what to look for.
-# It must match the definition in your notebook exactly.
+# It must match the definition in your notebook exactly for pickel to work
 def cast_to_str(x):
     return x.astype(str)
 
 # ==================================================
 # 3. LOAD ASSETS
 # ==================================================
-print("Loading Production Pipeline and Column Definitions...")
+print(f"Loading Production Pipeline, Columns and Defaults from: {MODELS_DIR} ...")
 
 try:
-    # Now that 'cast_to_str' is defined above, this load will succeed
-    model = joblib.load('ames_housing_super_model_production.pkl')
+    # UPDATED: Use the new path logic and the filename you just saved
+    model_path = MODELS_DIR / 'ames_housing_super_model_production.pkl'
+    columns_path = MODELS_DIR / 'ames_model_columns.pkl'
+    defaults_path = MODELS_DIR / 'ames_model_defaults.pkl' 
 
-    expected_columns = joblib.load('ames_model_columns.pkl')
+    # Now that 'cast_to_str' is defined above, this load will succeed
+    model = joblib.load(model_path)
+    expected_columns = joblib.load(columns_path)
+    model_defaults = joblib.load(defaults_path)
 
     print("✅ Model & Columns loaded successfully!")
 
+except FileNotFoundError as e:
+    print(f"❌ FATAL ERROR: Could not find file. {e}")
+    print(f"   Looking in: {MODELS_DIR}")
 except Exception as e:
     print(f"❌ FATAL ERROR: {e}")
-    print("   Did you run the Production Notebook to generate the .pkl files?")
 
 # ==================================================
 # 4. DEFINE GUARDRAILS
 # ==================================================
 def apply_guardrails(input_df):
     """
-    Applies sanity checks.
+    Applies sanity checks to prevent unrealistic values.
     """
     safe_df = input_df.copy()
 
@@ -55,6 +68,9 @@ def apply_guardrails(input_df):
 # ==================================================
 # 5. PREDICT ENDPOINT
 # ==================================================
+# ==================================================
+# 5. PREDICT ENDPOINT
+# ==================================================
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
@@ -62,10 +78,13 @@ def predict():
         json_data = request.get_json()
         input_df = pd.DataFrame([json_data])
 
-        # B. THE BRIDGE (Reindexing)
-        # Ensure we have 79 columns (missing ones become NaN)
-        # Note: 'expected_columns' is now safely loaded
+        # B. THE BRIDGE (Reindexing & Filling)
+        # 1. Ensure we have the exact columns (creates NaNs for missing ones)
         input_df = input_df.reindex(columns=expected_columns)
+        
+        # 2. FILL MISSING VALUES (The Safety Net)
+        # This uses the median/mode dict we saved to replace NaNs
+        input_df = input_df.fillna(model_defaults) # <--- CRITICAL FIX
 
         # C. Apply Guardrails
         input_df = apply_guardrails(input_df)
