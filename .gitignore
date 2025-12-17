@@ -21,3 +21,5 @@ ames_housing_prices_modeling_master_depricated.ipynb
 ames_housing_prices_modeling_production_depricated.ipynb
 ames_housing_prices_EDA.ipynb
 ames_housing_prices_modeling.ipynb
+
+app_production.py
