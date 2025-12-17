@@ -23,3 +23,4 @@ ames_housing_prices_EDA.ipynb
 ames_housing_prices_modeling.ipynb
 
 app_production.py
+test_api_production.py
