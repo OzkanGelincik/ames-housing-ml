@@ -1,5 +1,6 @@
 # --- System Files ---
 .DS_Store
+.env
 
 # --- Python & Environment ---
 __pycache__/
