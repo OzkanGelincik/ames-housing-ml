@@ -8,40 +8,30 @@ This repository contains a robust machine learning pipeline designed to predict 
 
 ## 📂 Repository Structure
 
-This project is divided into two distinct phases:
+This project is divided into three distinct phases:
 
 ### 1. 🔬 The Lab Notebook (`ames_housing_prices_modeling_master.ipynb`)
 **"The Research Phase"**
 - Extensive Exploratory Data Analysis (EDA).
-- Model training: OLS, Ridge, Lasso, ElasticNet, SVR, Random Forest, XGBoost, CatBoost, and Voting (Ensemble) Regressors
-- Feature Engineering experiments (Ordinal vs. One-Hot Encoding; incl. Total Square Footage, House Age, Total Bathrooms, and Longitude/Lattitude Mapping for Neighborhoods).
+- Model training: OLS, Ridge, Lasso, ElasticNet, SVR, Random Forest, XGBoost, CatBoost, and Voting (Ensemble) Regressors.
+- Feature Engineering experiments (Ordinal vs. One-Hot Encoding).
 - Hyperparameter tuning via GridSearch.
-- Stress Testing (e.g., The 'Ghost House' (0 SqFt), 'Impossible House' (Negative Area) and 'Mega-Mansion' (200k SqFt) simulations).
-- Feature Importance Analysis (Model Coefficients, Feature Importances, Perfmuation Importance, and SHAP values).
+- Stress Testing (e.g., 'Ghost House', 'Impossible House', and 'Mega-Mansion' simulations).
+- Feature Importance Analysis (SHAP values, Permutation Importance).
 
 ### 2. 🏭 The Production Notebook (`ames_housing_prices_modeling_production.ipynb`)
 **"The Deployment Phase"**
-- A streamlined, clean execution pipeline (incl. the winning model 🏆).
+- A streamlined execution pipeline (incl. the winning model 🏆).
 - Consolidates preprocessing and modeling into a single `sklearn` Pipeline.
-- Handles raw user input (JSON-style) with automatic imputation.
-- Generates the final deployment artifacts (`.pkl` files).
+- Handles raw user input with automatic imputation using `ames_model_defaults.pkl`.
+- Generates deployment artifacts (`.pkl` files) synchronized with the dashboard.
 
----
-
-## 🧪 API Verification & Testing
-
-Once the server is running (`python app_3.0.py`), you can use the provided test scripts to verify model performance and safety guardrails.
-
-| Script | Purpose |
-| :--- | :--- |
-| **`test_basic.py`** | **Connectivity Check.** Sends a standard request to ensure the API returns a valid price and HTTP 200 status. |
-| **`test_guardrails.py`** | **Safety Check.** Stress tests the system with extreme inputs (e.g., 200k sq ft mansions) and missing data to ensure the pipeline doesn't crash. |
-| **`test_comparison.py`** | **Logic Check.** Compares a standard house vs. a renovated house to ensure the model responds logically to improvements (Price increases). |
-
-**To run a test:**
-```bash
-python test_basic.py
-```
+### 3. 🖥️ The Interactive Dashboard (`dashboard_v3.py`)
+**"The Investor Interface"**
+- A live web application built with **Shiny for Python**.
+- **Investor Mode:** Simulate purchasing distressed properties at a discount (0-50%).
+- **Flipper Mode:** Toggle renovations (Luxury Kitchen, Finished Basement, Central Air) and visualize real-time ROI.
+- **Deal Economics:** Dynamic waterfall charts showing "Total Investment" vs. "Exit Price."
 
 ---
 
@@ -61,24 +51,34 @@ The final "Super Model" is a **Voting Regressor** consisting of three distinct b
 
 ## 🛠️ Tech Stack
 
-- **Language:** Python 3.10+
-- **Core:** `scikit-learn`, `pandas`, `numpy`
+- **Core:** `scikit-learn`, `pandas`, `numpy`, `joblib`
 - **Boosting:** `xgboost`, `catboost`
-- **Serialization:** `joblib`
+- **Dashboard:** `shiny`, `rsconnect-python`, `matplotlib`
+- **Utilities:** Custom `utils.py` module for robust data casting.
 
 ---
 
-## 🚀 Quick Start (Inference)
+## 🚀 Quick Start
 
-To use the pre-trained model for prediction:
+### 1. Run the Dashboard (UI)
+To launch the interactive deal simulator locally:
 
-```python
+```bash
+shiny run --reload dashboard_v3.py
+```
+
+### 2. Run Inference (Python API)
+
+To use the pre-trained model for code-based prediction:
+
+``` python
 import joblib
 import pandas as pd
+from utils import cast_to_str # Helper for pipeline compatibility
 
-# 1. Load the Pipeline and Column Definition
-model = joblib.load('ames_housing_super_model_production.pkl')
-model_cols = joblib.load('ames_model_columns.pkl')
+# 1. Load the Pipeline and Artifacts
+model = joblib.load('models/ames_housing_super_model_production.pkl')
+model_cols = joblib.load('models/ames_model_columns.pkl')
 
 # 2. Define User Input (Can be partial data)
 user_data = {
@@ -96,6 +96,14 @@ prediction = model.predict(input_df)[0]
 print(f"Predicted Price: ${prediction:,.2f}")
 ```
 
+## 🧪 Verification & Testing
+
+| Script | Purpose |
+| :--- | :--- |
+| **`test_basic.py`** | **Connectivity Check.** Sends a standard request to ensure the API returns a valid price. |
+| **`test_guardrails_v2.py`** | **Safety Check.** Stress tests the system with extreme inputs (e.g., 200k sq ft mansions) to ensure stability. |
+| **`test_comparison.py`** | **Logic Check.** Compares a standard house vs. a renovated house to ensure the model responds logically to improvements (Price increases). |
+
 ---
 
 ## 🏆 Key Results
@@ -104,6 +112,7 @@ print(f"Predicted Price: ${prediction:,.2f}")
 - **Single Best Model (XGBoost): ~0.914**
 - **Ensemble Model: 0.933 (~20% reduction in remaining error).**
 - **Stress Test: Successfully handles extreme outliers (e.g., 200k sq ft inputs) without crashing or outputting infinity, thanks to tree-clamping and robust encoding.**
+- **Business Impact: The "Buy Box" strategy derived from SHAP analysis identifies that finishing a basement and upgrading a kitchen yields the highest ROI, while "Garage Type" is a low-leverage renovation.**
 
 ---
 
