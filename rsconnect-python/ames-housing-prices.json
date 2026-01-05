@@ -1,0 +1,12 @@
+{
+    "https://api.shinyapps.io": {
+        "server_url": "https://api.shinyapps.io",
+        "filename": "/Users/ozkangelincik/git_proj/ames-housing-prices",
+        "app_url": "https://ozkangelincikshinyapp.shinyapps.io/ames_housing_flipper/",
+        "app_id": "16374306",
+        "app_guid": null,
+        "title": "Ames Housing Flipper",
+        "app_mode": "python-shiny",
+        "app_store_version": 1
+    }
+}

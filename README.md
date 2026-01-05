@@ -67,6 +67,9 @@ To launch the interactive deal simulator locally:
 shiny run --reload dashboard_v3.py
 ```
 
+📈 **LIVE APP:**  https://ozkangelincikshinyapp.shinyapps.io/ames_housing_flipper/
+
+
 ### 2. Run Inference (Python API)
 
 To use the pre-trained model for code-based prediction:

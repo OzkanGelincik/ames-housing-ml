@@ -9,6 +9,8 @@ The dashboard allows users to:
 3.  **Simulate Deals:** Apply purchase discounts to see real-world "Flipper Profit."
 4.  **Visualize ROI:** See real-time updates on Deal Economics via dynamic waterfall plots.
 
+🚀 **LIVE APP:**  https://ozkangelincikshinyapp.shinyapps.io/ames_housing_flipper/
+
 ---
 
 ## 📂 Version History
