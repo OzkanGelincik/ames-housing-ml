@@ -5,7 +5,7 @@
         "app_url": "https://ozkangelincikshinyapp.shinyapps.io/ames_housing_flipper/",
         "app_id": "16374306",
         "app_guid": null,
-        "title": "Ames Housing Flipper",
+        "title": "ames_housing_flipper",
         "app_mode": "python-shiny",
         "app_store_version": 1
     }

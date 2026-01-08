@@ -78,6 +78,9 @@ def server(input, output, session):
         # We need this to calculate the "Fair Market Value" BEFORE you touch it
         base_no_reno = base_df.copy()
         base_no_reno['GarageCars'] = 0; base_no_reno['GarageArea'] = 0
+
+        base_no_reno['GarageType'] = 'None'  # <--- match the renovation logic
+
         base_no_reno['CentralAir'] = 'N'
         base_no_reno['KitchenQual'] = 'TA'
         base_no_reno['BsmtFinSF1'] = 0; base_no_reno['TotalBsmtSF'] = 1000
